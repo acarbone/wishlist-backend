@@ -1,0 +1,30 @@
+service: wishlist
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+package:
+  exclude:
+    - node_modules/**
+    - src/**
+
+layers:
+  nodeModules:
+    path: layer
+    compatibleRuntimes:
+      - nodejs12.x
+
+functions:
+  getResource:
+    handler: dist/resource/functions/resource.create
+    layers:
+      - {Ref: NodeModulesLambdaLayer}
+    events:
+      - http:
+          path: /resource
+          method: POST
+          cors: true
+
+plugins:
+  - serverless-offline
